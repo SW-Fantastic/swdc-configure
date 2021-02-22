@@ -1,5 +1,7 @@
 # application - config
 
+[![Release](https://jitpack.io/v/SW-Fantastic/swdc-configure.svg)](https://jitpack.io/#SW-Fantastic/swdc-configure)
+
 配置的处理器，可以快速加载各类外部配置，主要处理配置的读写。
 将会在JitPack提供。
 
