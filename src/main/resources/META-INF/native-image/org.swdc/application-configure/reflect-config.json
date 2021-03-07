@@ -1,0 +1,131 @@
+[ {
+  "name" : "org.swdc.config.AbstractConfig",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods" : true,
+  "allPublicMethods" : true,
+  "allDeclaredClasses" : true,
+  "allPublicClasses" : true,
+  "allDeclaredFields" : true,
+  "allPublicFields" : true
+}, {
+  "name" : "org.swdc.config.AbstractConfigure",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods" : true,
+  "allPublicMethods" : true,
+  "allDeclaredClasses" : true,
+  "allPublicClasses" : true,
+  "allDeclaredFields" : true,
+  "allPublicFields" : true
+}, {
+  "name" : "org.swdc.config.ConfigUtil",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods" : true,
+  "allPublicMethods" : true,
+  "allDeclaredClasses" : true,
+  "allPublicClasses" : true,
+  "allDeclaredFields" : true,
+  "allPublicFields" : true
+}, {
+  "name" : "org.swdc.config.Configure",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods" : true,
+  "allPublicMethods" : true,
+  "allDeclaredClasses" : true,
+  "allPublicClasses" : true,
+  "allDeclaredFields" : true,
+  "allPublicFields" : true
+}, {
+  "name" : "org.swdc.config.Converter",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods" : true,
+  "allPublicMethods" : true,
+  "allDeclaredClasses" : true,
+  "allPublicClasses" : true,
+  "allDeclaredFields" : true,
+  "allPublicFields" : true
+}, {
+  "name" : "org.swdc.config.annotations.Property",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods" : true,
+  "allPublicMethods" : true,
+  "allDeclaredClasses" : true,
+  "allPublicClasses" : true,
+  "allDeclaredFields" : true,
+  "allPublicFields" : true
+}, {
+  "name" : "org.swdc.config.configs.MapBasedConfig",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods" : true,
+  "allPublicMethods" : true,
+  "allDeclaredClasses" : true,
+  "allPublicClasses" : true,
+  "allDeclaredFields" : true,
+  "allPublicFields" : true
+}, {
+  "name" : "org.swdc.config.configs.JsonConfig",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods" : true,
+  "allPublicMethods" : true,
+  "allDeclaredClasses" : true,
+  "allPublicClasses" : true,
+  "allDeclaredFields" : true,
+  "allPublicFields" : true
+}, {
+  "name" : "org.swdc.config.configs.PropertiesConfig",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods" : true,
+  "allPublicMethods" : true,
+  "allDeclaredClasses" : true,
+  "allPublicClasses" : true,
+  "allDeclaredFields" : true,
+  "allPublicFields" : true
+}, {
+  "name" : "org.swdc.config.configs.XmlConfig",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods" : true,
+  "allPublicMethods" : true,
+  "allDeclaredClasses" : true,
+  "allPublicClasses" : true,
+  "allDeclaredFields" : true,
+  "allPublicFields" : true
+}, {
+  "name" : "org.swdc.config.configs.YamlConfig",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods" : true,
+  "allPublicMethods" : true,
+  "allDeclaredClasses" : true,
+  "allPublicClasses" : true,
+  "allDeclaredFields" : true,
+  "allPublicFields" : true
+}, {
+  "name" : "org.swdc.config.converters.Converters",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods" : true,
+  "allPublicMethods" : true,
+  "allDeclaredClasses" : true,
+  "allPublicClasses" : true,
+  "allDeclaredFields" : true,
+  "allPublicFields" : true
+}, {
+  "name" : "org.swdc.config.converters.ConvertersKey",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods" : true,
+  "allPublicMethods" : true,
+  "allDeclaredClasses" : true,
+  "allPublicClasses" : true,
+  "allDeclaredFields" : true,
+  "allPublicFields" : true
+} ]

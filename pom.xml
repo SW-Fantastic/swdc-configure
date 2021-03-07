@@ -56,8 +56,34 @@
         </dependency>
     </dependencies>
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <build>
         <plugins>
+            <plugin>
+                <groupId>com.github.SW-Fantastic</groupId>
+                <artifactId>graal-native-plugin</artifactId>
+                <version>0.1</version>
+                <executions>
+                    <execution>
+                        <id>gen-reflect</id>
+                        <goals>
+                            <goal>gen-reflect</goal>
+                        </goals>
+                        <phase>compile</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <packages>
+                        <param>>org.swdc.config</param>
+                    </packages>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
