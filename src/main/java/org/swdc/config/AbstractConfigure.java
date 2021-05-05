@@ -54,7 +54,7 @@ public abstract class AbstractConfigure {
                         field.set(this,configure.getConfig(property.value(),field.getType()));
                     }
                 } catch (Exception e) {
-                    throw new RuntimeException("无法设置属性：" + property.value(),e);
+                    throw new RuntimeException("无法设置属性：" + property.value() + "请检查您的配置文件。" ,e);
                 }
                 return null;
             });

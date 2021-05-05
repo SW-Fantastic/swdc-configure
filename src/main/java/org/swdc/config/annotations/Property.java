@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 public @interface Property {
 
     /**
-     * 填写El表达式
+     * 填写属性表达式
      * @return
      */
     String value() default "";

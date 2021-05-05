@@ -118,6 +118,17 @@ public class PropertiesConfig extends AbstractConfig {
             return subConfigs.get(key);
         }
 
+        boolean subConfExist = false;
+        for (String keys: configMap.keySet()) {
+            if (keys.contains(key) && !keys.equals(key)) {
+                subConfExist = true;
+            }
+        }
+
+        if (!subConfExist) {
+            return null;
+        }
+
         PropertiesConfig subConf = new PropertiesConfig(key,this);
         this.subConfigs.put(key,subConf);
         return subConf;

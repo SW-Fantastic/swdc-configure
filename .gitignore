@@ -3,3 +3,4 @@ target
 /testConf.yml
 /testConfig.xml
 /config.properties
+.gradle
