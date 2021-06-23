@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 public @interface Property {
 
     /**
-     * 填写属性表达式
+     * 填写属性的全路径
      * @return
      */
     String value() default "";

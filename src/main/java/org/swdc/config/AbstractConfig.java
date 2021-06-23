@@ -1,34 +1,54 @@
 package org.swdc.config;
 
-import org.swdc.config.converters.Converters;
+import org.swdc.config.annotations.ConfigureSource;
 
+import java.io.*;
 
-public abstract class AbstractConfig implements Configure {
+public abstract class AbstractConfig {
 
-    private Configure parent;
-    private Converters converters = new Converters();
+    protected File sourceFile;
+    protected InputStream sourceStream;
 
-    protected abstract void saveInternal();
+    private ConfigHandler handler;
 
-    public Configure getParent() {
-        return parent;
+    public AbstractConfig(){
+        this.init();
     }
 
-    public Converters getConverters() {
-        return converters;
-    }
-
-    protected void setParent(Configure parent) {
-        this.parent = parent;
-    }
-
-    @Override
-    public void save() {
-        if (parent != null) {
-            parent.save();
-        } else {
-            this.saveInternal();
+    public void load() {
+        try {
+            this.handler.load(this);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
+    public void save() {
+        try {
+            this.handler.save(this);
+        }catch (Exception e) {
+            throw new RuntimeException("无法存储配置",e);
+        }
+    }
+
+    private void init(){
+        try {
+            ConfigureSource source = this.getClass().getAnnotation(ConfigureSource.class);
+            Class handler = source.handler();
+            this.handler =(ConfigHandler) handler.getConstructor().newInstance();
+
+            this.load();
+
+        } catch (Exception e) {
+
+        }
+    }
+
+    public void setSourceStream(InputStream sourceStream) {
+        this.sourceStream = sourceStream;
+    }
+
+    public void setSourceFile(File sourceFile) {
+        this.sourceFile = sourceFile;
+    }
 }
