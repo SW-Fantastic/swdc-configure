@@ -1,6 +1,7 @@
 test:
   aaa: '1234'
   bbb: '1234'
+  eee: {fff: 222}
   conf: !!org.swdc.config.test.TestYaml$TestConfig2
     list: [1234, 5678]
     testC: '1111'

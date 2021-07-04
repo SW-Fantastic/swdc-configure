@@ -19,7 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
- * 读写XML类型的配置。
+ * Xml类型的配置文件的处理。
  * @param <T>
  */
 public class XmlConfigHandler<T extends AbstractConfig> implements ConfigHandler<T> {

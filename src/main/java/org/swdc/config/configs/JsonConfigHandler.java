@@ -13,6 +13,10 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Json类型的配置文件的处理。
+ * @param <T>
+ */
 public class JsonConfigHandler <T extends AbstractConfig> implements ConfigHandler<T> {
 
     private ObjectMapper mapper = new ObjectMapper();

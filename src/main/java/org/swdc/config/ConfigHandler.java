@@ -6,8 +6,11 @@ import org.swdc.config.converters.Converters;
 
 import java.io.*;
 import java.lang.reflect.Field;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
+import java.net.URI;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +18,46 @@ import java.util.Map;
  * 这个是处理Config的接口。
  */
 public interface ConfigHandler<T> {
+
+    /**
+     * 如果使用了FileSystem，我们需要在流关闭的时候同时
+     * 关闭FileSystem。
+     */
+    class FSAutoCloseInputStream extends FilterInputStream {
+
+        private FileSystem fs;
+
+        public FSAutoCloseInputStream(InputStream in, FileSystem fs) {
+            super(in);
+            this.fs = fs;
+        }
+
+        @Override
+        public void close() throws IOException {
+            super.close();
+            fs.close();
+        }
+    }
+
+    /**
+     * 如果使用了FileSystem，我们需要在流关闭的时候同时
+     * 关闭FileSystem。
+     */
+    class FSAutoCloseOutputStream extends FilterOutputStream {
+
+        private FileSystem fs;
+
+        public FSAutoCloseOutputStream(OutputStream out, FileSystem fs) {
+            super(out);
+            this.fs = fs;
+        }
+
+        @Override
+        public void close() throws IOException {
+            super.close();
+            fs.close();
+        }
+    }
 
     Converters converters = new Converters();
 
@@ -53,20 +96,42 @@ public interface ConfigHandler<T> {
 
     default InputStream getInputStream(ConfigureSource source) throws IOException {
         InputStream in = null;
-        if (source.external()) {
-            File configFile = new File(source.value());
-            in = new FileInputStream(configFile);
+        if (source.filesystem().isEmpty()) {
+            if (source.external()) {
+                File configFile = new File(source.value());
+                in = new FileInputStream(configFile);
+            } else {
+                in = source.loadForm().getModule().getResourceAsStream(source.value());
+            }
         } else {
-            in = source.loadForm().getModule().getResourceAsStream(source.value());
+            String fsUrl = source.filesystem();
+            URI uri = URI.create(fsUrl);
+            FileSystem fs = FileSystems.newFileSystem(uri,new HashMap<>());
+            String path = uri.getPath();
+            Path target = fs.getPath(path);
+            in = new FSAutoCloseInputStream(Files.newInputStream(target),fs);
         }
+
         return in;
     }
 
     default OutputStream getOutputStream(ConfigureSource source) throws IOException {
-        if (!source.external()) {
-            return null;
+        OutputStream out = null;
+        if (source.filesystem().isEmpty()) {
+            if (!source.external()) {
+                return null;
+            } else {
+                out = new FileOutputStream(source.value());
+            }
+        } else {
+            String fsUrl = source.filesystem();
+            URI uri = URI.create(fsUrl);
+            FileSystem fs = FileSystems.newFileSystem(uri,new HashMap<>());
+            String path = uri.getPath();
+            Path target = fs.getPath(path);
+            out = new FSAutoCloseOutputStream(Files.newOutputStream(target),fs);
         }
-        OutputStream out = new FileOutputStream(source.value());
+
         return out;
     }
 

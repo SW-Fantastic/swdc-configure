@@ -3,17 +3,19 @@ package org.swdc.config.configs;
 import org.swdc.config.AbstractConfig;
 import org.swdc.config.ConfigHandler;
 import org.swdc.config.Converter;
-import org.swdc.config.Reflections;
 import org.swdc.config.annotations.ConfigureSource;
 import org.swdc.config.annotations.Property;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+/**
+ * Yaml类型的文件的处理。
+ * @param <T>
+ */
 public class YamlConfigHandler  <T extends AbstractConfig> implements ConfigHandler<T> {
 
     private static Map<Class, Map<Property, Field>> propertiesMap = new HashMap<>();

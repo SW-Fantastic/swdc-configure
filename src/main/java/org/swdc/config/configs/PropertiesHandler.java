@@ -11,8 +11,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
+/**
+ * Properties类型的配置文件的处理。
+ * @param <T>
+ */
 public class PropertiesHandler  <T extends AbstractConfig> implements ConfigHandler<T> {
 
     private static Map<Class, Map<Property,Field>> propertiesMap = new HashMap<>();
@@ -49,14 +54,37 @@ public class PropertiesHandler  <T extends AbstractConfig> implements ConfigHand
                     }
                     properties.setProperty(key,property);
                 } else {
-                    this.setPropertiesObjects(key,field.get(configObj),properties);
+                    if (List.class.isAssignableFrom(field.getType())) {
+                        String property = this.writeList(field,(List) field.get(configObj));
+                        properties.setProperty(key,property);
+                    } else {
+                        this.setPropertiesObjects(key,field.get(configObj),properties);
+                    }
+
                 }
             }  catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
         OutputStream outputStream = this.getOutputStream(source);
-        properties.store(outputStream,"Configure");
+        properties.store(outputStream,"configuration");
+    }
+
+    private String writeList(Field field,List props) {
+        ParameterizedType paramType = (ParameterizedType) field.getGenericType();
+        Class real = (Class) paramType.getActualTypeArguments()[0];
+        if (!Reflections.isSystemType(real)) {
+            throw new RuntimeException("properties不支持List嵌套Object");
+
+        }
+
+        StringBuilder data = new StringBuilder();
+        for (Object item: props) {
+            data.append(item);
+            data.append(",");
+        }
+
+        return data.substring(0,data.length() - 1);
     }
 
     @Override
@@ -90,8 +118,14 @@ public class PropertiesHandler  <T extends AbstractConfig> implements ConfigHand
                         field.set(configObj,realValue);
                     }
                 } else {
+
                     String prefix = key;
                     Object value = this.loadPropertiesObject(prefix,field.getType(),properties);
+
+                    if (List.class.isAssignableFrom(field.getType())) {
+                        value = this.loadList(field,properties.getProperty(key));
+                    }
+
                     field.set(configObj,value);
                 }
             } catch (Exception e) {
@@ -119,8 +153,14 @@ public class PropertiesHandler  <T extends AbstractConfig> implements ConfigHand
                         properties.setProperty(prefix + "." + field.getName(), (String) realValue);
                     }
                 } else {
-                    Object value = this.loadPropertiesObject(prefix + "." + field.getName(),field.getType(),properties);
-                    this.setPropertiesObjects(prefix + "." + field.getName(), value,properties);
+                    if (List.class.isAssignableFrom(field.getType())) {
+                        List data = (List) field.get(obj);
+                        String value = this.writeList(field,data);
+                        properties.setProperty(prefix + "." + field.getName(), value);
+                    } else {
+                        this.setPropertiesObjects(prefix + "." + field.getName(),field.getType(),properties);
+
+                    }
                 }
             }
         } catch (Exception e) {
@@ -128,12 +168,34 @@ public class PropertiesHandler  <T extends AbstractConfig> implements ConfigHand
         }
     }
 
+
+    private List loadList(Field field, String prop) {
+        ParameterizedType paramType = (ParameterizedType) field.getGenericType();
+        Class real = (Class) paramType.getActualTypeArguments()[0];
+        if (!Reflections.isSystemType(real)) {
+            throw new RuntimeException("properties不支持List嵌套Object");
+
+        }
+        String[] values = prop.split(",");
+        ArrayList list = new ArrayList();
+
+        for (String item: values) {
+            if (real.equals(String.class)) {
+                list.add(item);
+            } else {
+                Converter conv = converters.getConverter(item.getClass(),real);
+                if (conv == null) {
+                    throw new RuntimeException("无法转换类型： String to " + field.getType());
+                }
+                Object realValue = conv.convert(item);
+                list.add(realValue);
+            }
+        }
+        return list;
+    }
+
     private Object loadPropertiesObject(String prefix,Class type, Properties properties) {
         try {
-            if (List.class.isAssignableFrom(type)) {
-                // 是一个list
-
-            }
             Object target = type.getConstructor().newInstance();
             Field[] fields = type.getDeclaredFields();
             for (Field field: fields) {
@@ -151,6 +213,12 @@ public class PropertiesHandler  <T extends AbstractConfig> implements ConfigHand
                         field.set(target,realValue);
                     }
                 } else {
+                    if (List.class.isAssignableFrom(field.getType())){
+                        // 是一个list
+                        String val = properties.getProperty(prefix + "." + field.getName());
+                        field.set(target,loadList(field,val));
+                        continue;
+                    }
                     Object value = this.loadPropertiesObject(prefix + "." + field.getName(),field.getType(),properties);
                     field.set(target,value);
                 }

@@ -4,6 +4,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.nio.file.FileSystem;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -37,5 +38,12 @@ public @interface ConfigureSource {
      * @return
      */
     Class loadForm() default Object.class;
+
+    /**
+     * 使用FileSystem并指定FileSystem的url。
+     * @return
+     */
+    String filesystem() default "";
+
 
 }

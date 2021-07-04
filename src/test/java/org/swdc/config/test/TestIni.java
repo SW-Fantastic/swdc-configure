@@ -2,23 +2,23 @@ package org.swdc.config.test;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.swdc.config.AbstractConfig;
 import org.swdc.config.annotations.ConfigureSource;
 import org.swdc.config.annotations.Property;
-import org.swdc.config.AbstractConfig;
-import org.swdc.config.configs.YamlConfigHandler;
+import org.swdc.config.configs.InitializeConfigHandler;
 
 import java.io.IOException;
 import java.util.List;
 
-public class TestYaml {
+public class TestIni {
 
     public static class TestConfig2  {
+
+        private List<String> list;
 
         private String testC;
 
         private String testD;
-
-        private List<Integer> list;
 
         public String getTestC() {
             return testC;
@@ -36,16 +36,16 @@ public class TestYaml {
             this.testD = testD;
         }
 
-        public List<Integer> getList() {
+        public List<String> getList() {
             return list;
         }
 
-        public void setList(List<Integer> list) {
+        public void setList(List<String> list) {
             this.list = list;
         }
     }
 
-    @ConfigureSource(value = "test.yaml",handler = YamlConfigHandler.class)
+    @ConfigureSource(value = "test.ini",handler = InitializeConfigHandler.class)
     public static class TestConfig extends AbstractConfig {
 
         @Property("test.bbb")
@@ -54,11 +54,8 @@ public class TestYaml {
         @Property("test.aaa")
         private String testA;
 
-        @Property("test.conf")
+        @Property("conf")
         private TestConfig2 config2;
-
-        @Property("test.eee.fff")
-        private Integer test;
 
         public String getTestA() {
             return testA;
@@ -80,27 +77,26 @@ public class TestYaml {
             return config2;
         }
 
-        public Integer getTest() {
-            return test;
-        }
-
-        public void setTest(Integer test) {
-            this.test = test;
+        public void setConfig2(TestConfig2 config2) {
+            this.config2 = config2;
         }
     }
 
+
     @Test
-    public void testYamlLoad(){
+    public void testLoad() throws IOException {
         TestConfig config = new TestConfig();
         Assertions.assertEquals("1234",config.getTestA());
+        Assertions.assertEquals("1234",config.getTestB());
         Assertions.assertNotNull(config.getConfig2());
+        Assertions.assertEquals(4,config.getConfig2().getList().size());
     }
 
     @Test
-    public void testSave() throws IOException {
+    public void testSaveXml() {
         TestConfig config = new TestConfig();
 
-        config.setTestA("4567");
+        config.setTestA("1567");
         config.save();
 
         config.load();
@@ -112,5 +108,7 @@ public class TestYaml {
         config.load();
         Assertions.assertEquals("1234",config.getTestA());
     }
+
+
 
 }
