@@ -9,7 +9,7 @@
   "allDeclaredFields" : true,
   "allPublicFields" : true
 }, {
-  "name" : "org.swdc.config.AbstractConfigure",
+  "name" : "org.swdc.config.ConfigHandler",
   "allDeclaredConstructors" : true,
   "allPublicConstructors" : true,
   "allDeclaredMethods" : true,
@@ -19,7 +19,7 @@
   "allDeclaredFields" : true,
   "allPublicFields" : true
 }, {
-  "name" : "org.swdc.config.ConfigUtil",
+  "name" : "java.io.FilterInputStream",
   "allDeclaredConstructors" : true,
   "allPublicConstructors" : true,
   "allDeclaredMethods" : true,
@@ -29,7 +29,27 @@
   "allDeclaredFields" : true,
   "allPublicFields" : true
 }, {
-  "name" : "org.swdc.config.Configure",
+  "name" : "org.swdc.config.ConfigHandler$FSAutoCloseInputStream",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods" : true,
+  "allPublicMethods" : true,
+  "allDeclaredClasses" : true,
+  "allPublicClasses" : true,
+  "allDeclaredFields" : true,
+  "allPublicFields" : true
+}, {
+  "name" : "java.io.FilterOutputStream",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods" : true,
+  "allPublicMethods" : true,
+  "allDeclaredClasses" : true,
+  "allPublicClasses" : true,
+  "allDeclaredFields" : true,
+  "allPublicFields" : true
+}, {
+  "name" : "org.swdc.config.ConfigHandler$FSAutoCloseOutputStream",
   "allDeclaredConstructors" : true,
   "allPublicConstructors" : true,
   "allDeclaredMethods" : true,
@@ -49,6 +69,26 @@
   "allDeclaredFields" : true,
   "allPublicFields" : true
 }, {
+  "name" : "org.swdc.config.Reflections",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods" : true,
+  "allPublicMethods" : true,
+  "allDeclaredClasses" : true,
+  "allPublicClasses" : true,
+  "allDeclaredFields" : true,
+  "allPublicFields" : true
+}, {
+  "name" : "org.swdc.config.annotations.ConfigureSource",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods" : true,
+  "allPublicMethods" : true,
+  "allDeclaredClasses" : true,
+  "allPublicClasses" : true,
+  "allDeclaredFields" : true,
+  "allPublicFields" : true
+}, {
   "name" : "org.swdc.config.annotations.Property",
   "allDeclaredConstructors" : true,
   "allPublicConstructors" : true,
@@ -59,7 +99,7 @@
   "allDeclaredFields" : true,
   "allPublicFields" : true
 }, {
-  "name" : "org.swdc.config.configs.MapBasedConfig",
+  "name" : "org.swdc.config.configs.InitializeConfigHandler",
   "allDeclaredConstructors" : true,
   "allPublicConstructors" : true,
   "allDeclaredMethods" : true,
@@ -69,7 +109,7 @@
   "allDeclaredFields" : true,
   "allPublicFields" : true
 }, {
-  "name" : "org.swdc.config.configs.JsonConfig",
+  "name" : "org.swdc.config.configs.JsonConfigHandler",
   "allDeclaredConstructors" : true,
   "allPublicConstructors" : true,
   "allDeclaredMethods" : true,
@@ -79,7 +119,7 @@
   "allDeclaredFields" : true,
   "allPublicFields" : true
 }, {
-  "name" : "org.swdc.config.configs.PropertiesConfig",
+  "name" : "org.swdc.config.configs.PropertiesHandler",
   "allDeclaredConstructors" : true,
   "allPublicConstructors" : true,
   "allDeclaredMethods" : true,
@@ -89,7 +129,7 @@
   "allDeclaredFields" : true,
   "allPublicFields" : true
 }, {
-  "name" : "org.swdc.config.configs.XmlConfig",
+  "name" : "org.swdc.config.configs.XmlConfigHandler",
   "allDeclaredConstructors" : true,
   "allPublicConstructors" : true,
   "allDeclaredMethods" : true,
@@ -99,7 +139,17 @@
   "allDeclaredFields" : true,
   "allPublicFields" : true
 }, {
-  "name" : "org.swdc.config.configs.YamlConfig",
+  "name" : "org.swdc.config.configs.XmlConfigHandler$MapEntryConverter",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods" : true,
+  "allPublicMethods" : true,
+  "allDeclaredClasses" : true,
+  "allPublicClasses" : true,
+  "allDeclaredFields" : true,
+  "allPublicFields" : true
+}, {
+  "name" : "org.swdc.config.configs.YamlConfigHandler",
   "allDeclaredConstructors" : true,
   "allPublicConstructors" : true,
   "allDeclaredMethods" : true,

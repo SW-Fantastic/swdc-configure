@@ -1,0 +1,7 @@
+{
+  "demo": "the string for test",
+  "test": {
+    "test1": "the string for test A",
+    "test2": "the string for test B"
+  }
+}
