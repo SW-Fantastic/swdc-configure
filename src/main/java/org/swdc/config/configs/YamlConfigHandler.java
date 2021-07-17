@@ -18,7 +18,6 @@ import java.util.*;
  */
 public class YamlConfigHandler  <T extends AbstractConfig> implements ConfigHandler<T> {
 
-    private static Map<Class, Map<Property, Field>> propertiesMap = new HashMap<>();
     private ConfigureSource source;
     private Yaml properties = new Yaml();
 
@@ -133,12 +132,4 @@ public class YamlConfigHandler  <T extends AbstractConfig> implements ConfigHand
         return container;
     }
 
-    @Override
-    public Map<Property, Field> getReflection(Class clazz) {
-        if (!propertiesMap.containsKey(clazz)) {
-            Map<Property,Field> refs = ConfigHandler.super.getReflection(clazz);
-            propertiesMap.put(clazz,refs);
-        }
-        return propertiesMap.get(clazz);
-    }
 }

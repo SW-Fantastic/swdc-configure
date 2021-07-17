@@ -20,7 +20,6 @@ import java.util.*;
  */
 public class PropertiesHandler  <T extends AbstractConfig> implements ConfigHandler<T> {
 
-    private static Map<Class, Map<Property,Field>> propertiesMap = new HashMap<>();
     private ConfigureSource source;
 
     @Override
@@ -230,12 +229,4 @@ public class PropertiesHandler  <T extends AbstractConfig> implements ConfigHand
     }
 
 
-    @Override
-    public Map<Property, Field> getReflection(Class clazz) {
-        if (!propertiesMap.containsKey(clazz)) {
-            Map<Property,Field> refs = ConfigHandler.super.getReflection(clazz);
-            propertiesMap.put(clazz,refs);
-        }
-        return propertiesMap.get(clazz);
-    }
 }

@@ -21,7 +21,6 @@ public class JsonConfigHandler <T extends AbstractConfig> implements ConfigHandl
 
     private ObjectMapper mapper = new ObjectMapper();
     private JsonNode root;
-    private static Map<Class, Map<Property,Field>> propertiesMap = new HashMap<>();
     private ConfigureSource source;
 
     @Override
@@ -117,12 +116,4 @@ public class JsonConfigHandler <T extends AbstractConfig> implements ConfigHandl
         }
     }
 
-    @Override
-    public Map<Property, Field> getReflection(Class clazz) {
-        if (!propertiesMap.containsKey(clazz)) {
-            Map<Property,Field> refs = ConfigHandler.super.getReflection(clazz);
-            propertiesMap.put(clazz,refs);
-        }
-        return propertiesMap.get(clazz);
-    }
 }

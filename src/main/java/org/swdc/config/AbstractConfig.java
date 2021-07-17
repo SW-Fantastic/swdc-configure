@@ -1,8 +1,11 @@
 package org.swdc.config;
 
 import org.swdc.config.annotations.ConfigureSource;
+import org.swdc.config.annotations.Property;
 
 import java.io.*;
+import java.lang.reflect.Field;
+import java.util.Map;
 
 public abstract class AbstractConfig {
 
@@ -51,4 +54,9 @@ public abstract class AbstractConfig {
     public void setSourceFile(File sourceFile) {
         this.sourceFile = sourceFile;
     }
+
+    public Map<Property, Field> getConfigureInfo() {
+        return this.handler.getConfigureInfo(this.getClass());
+    }
+
 }

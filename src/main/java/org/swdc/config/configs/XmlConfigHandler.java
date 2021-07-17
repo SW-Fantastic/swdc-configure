@@ -24,7 +24,6 @@ import java.util.*;
  */
 public class XmlConfigHandler<T extends AbstractConfig> implements ConfigHandler<T> {
 
-    private static Map<Class, Map<Property, Field>> propertiesMap = new HashMap<>();
     private ConfigureSource source;
 
     @Override
@@ -212,15 +211,6 @@ public class XmlConfigHandler<T extends AbstractConfig> implements ConfigHandler
             throw new RuntimeException(e);
         }
         return result;
-    }
-
-    @Override
-    public Map<Property, Field> getReflection(Class clazz) {
-        if (!propertiesMap.containsKey(clazz)) {
-            Map<Property,Field> refs = ConfigHandler.super.getReflection(clazz);
-            propertiesMap.put(clazz,refs);
-        }
-        return propertiesMap.get(clazz);
     }
 
     /**

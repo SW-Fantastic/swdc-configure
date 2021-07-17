@@ -11,17 +11,13 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Initialization (Ini)类型的配置文件的处理。
  */
 public class InitializeConfigHandler <T extends AbstractConfig> implements ConfigHandler<T> {
 
-    private static Map<Class, Map<Property, Field>> propertiesMap = new HashMap<>();
     private ConfigureSource source;
 
     @Override
@@ -286,14 +282,6 @@ public class InitializeConfigHandler <T extends AbstractConfig> implements Confi
         }
 
         return list;
-    }
-
-    public Map<Property, Field> getReflection(Class clazz) {
-        if (!propertiesMap.containsKey(clazz)) {
-            Map<Property,Field> refs = ConfigHandler.super.getReflection(clazz);
-            propertiesMap.put(clazz,refs);
-        }
-        return propertiesMap.get(clazz);
     }
 
 }

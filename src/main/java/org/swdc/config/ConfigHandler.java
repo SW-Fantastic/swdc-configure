@@ -11,6 +11,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +19,8 @@ import java.util.Map;
  * 这个是处理Config的接口。
  */
 public interface ConfigHandler<T> {
+
+    Map<Class, Map<Property, Field>> propertiesMap = new HashMap<>();
 
     /**
      * 如果使用了FileSystem，我们需要在流关闭的时候同时
@@ -74,6 +77,11 @@ public interface ConfigHandler<T> {
     void load(T configObj) throws IOException;
 
     default Map<Property, Field> getReflection(Class clazz) {
+
+        if (propertiesMap.containsKey(clazz)) {
+            return propertiesMap.get(clazz);
+        }
+
         Map<Property,Field> result = new HashMap<>();
 
         Class target = clazz;
@@ -133,6 +141,10 @@ public interface ConfigHandler<T> {
         }
 
         return out;
+    }
+
+    default Map<Property,Field> getConfigureInfo(Class clazz) {
+        return Collections.unmodifiableMap(this.getReflection(clazz));
     }
 
 
