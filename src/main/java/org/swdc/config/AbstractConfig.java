@@ -22,7 +22,8 @@ public abstract class AbstractConfig {
         try {
             this.handler.load(this);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            System.err.println("配置加载失败，请检查配置文件是否完整，并且和配置类一一对应。");
+            e.printStackTrace();
         }
     }
 

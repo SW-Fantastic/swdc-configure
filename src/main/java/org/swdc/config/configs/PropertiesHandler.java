@@ -113,7 +113,7 @@ public class PropertiesHandler  <T extends AbstractConfig> implements ConfigHand
                         if (conv == null) {
                             throw new RuntimeException("无法转换类型： String to " + field.getType());
                         }
-                        Object realValue = conv.convert(field.getType());
+                        Object realValue = conv.convert(value);
                         field.set(configObj,realValue);
                     }
                 } else {
@@ -148,7 +148,7 @@ public class PropertiesHandler  <T extends AbstractConfig> implements ConfigHand
                         if (conv == null) {
                             throw new RuntimeException("无法转换类型： String to " + field.getType());
                         }
-                        Object realValue = conv.convert(field.getType());;
+                        Object realValue = conv.convert(value);;
                         properties.setProperty(prefix + "." + field.getName(), (String) realValue);
                     }
                 } else {
