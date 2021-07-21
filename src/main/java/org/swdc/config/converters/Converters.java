@@ -48,7 +48,40 @@ public class Converters {
                 .addConverter(Short.class,short.class,(s) -> s)
                 .addConverter(short.class,Short.class, (s) -> s)
                 .addConverter(boolean.class,Boolean.class, (b)->b)
-                .addConverter(Boolean.class,boolean.class, (b) -> b);
+                .addConverter(Boolean.class,boolean.class, (b) -> b)
+
+                // 精度丢失的强制转换。
+
+                // double -> int
+                .addConverter(Double.class,Integer.class, (d)  -> d.intValue())
+                .addConverter(Double.class,int.class, (d) -> d.intValue())
+                .addConverter(double.class, Integer.class, (d) -> Double.valueOf(d).intValue())
+                .addConverter(double.class, int.class,(d) -> int.class.cast(d))
+
+                // double -> float
+                .addConverter(Double.class,Float.class, (d)  -> d.floatValue())
+                .addConverter(Double.class,float.class, (d) -> d.floatValue())
+                .addConverter(double.class, Float.class, (d) -> Double.valueOf(d).floatValue())
+                .addConverter(double.class, float.class, (d) -> float.class.cast(d))
+
+                // double -> long
+                .addConverter(Double.class,Long.class, (d)  -> d.longValue())
+                .addConverter(Double.class,long.class, (d) -> d.longValue())
+                .addConverter(double.class, Long.class, (d) -> Double.valueOf(d).longValue())
+                .addConverter(double.class, long.class,(d) -> long.class.cast(d))
+
+                // float -> int
+                .addConverter(Float.class,Integer.class, (f)  -> f.intValue())
+                .addConverter(Float.class,int.class, (f) -> f.intValue())
+                .addConverter(float.class, Integer.class, (f) -> Float.valueOf(f).intValue())
+                .addConverter(float.class, int.class,(f) -> int.class.cast(f))
+
+                // float -> long
+                .addConverter(Float.class,Long.class, (f)  -> f.longValue())
+                .addConverter(Float.class,long.class, (f) -> f.longValue())
+                .addConverter(float.class, Long.class, (f) -> Float.valueOf(f).longValue())
+                .addConverter(float.class, long.class,(f) -> long.class.cast(f))
+                ;
 
     }
 
