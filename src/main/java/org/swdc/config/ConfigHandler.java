@@ -7,12 +7,15 @@ import org.swdc.config.converters.Converters;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.net.URI;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -103,10 +106,26 @@ public interface ConfigHandler<T> {
     }
 
     default InputStream getInputStream(ConfigureSource source) throws IOException {
+
+
+
         InputStream in = null;
+
+
         if (source.filesystem().isEmpty()) {
+            File configFile = new File(source.value());
             if (source.external()) {
-                File configFile = new File(source.value());
+                String osName = System.getProperty("os.name").trim().toLowerCase();
+                if (osName.contains("mac")) {
+                    String url = this.getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
+                    String base = URLDecoder.decode(url, StandardCharsets.UTF_8);
+                    if (base.indexOf(".app") > 0) {
+                        // 位于MacOS的Bundle（.app软件包）内部，特殊处理以获取正确的路径。
+                        String location = base.substring(0,base.indexOf(".app")) + ".app/Contents/";
+                        Path target = new File(location).toPath();
+                        configFile = target.resolve(source.value()).toFile();
+                    }
+                }
                 in = new FileInputStream(configFile);
             } else {
                 in = source.loadForm().getModule().getResourceAsStream(source.value());
@@ -129,7 +148,21 @@ public interface ConfigHandler<T> {
             if (!source.external()) {
                 return null;
             } else {
-                out = new FileOutputStream(source.value());
+                File configFile = new File(source.value());
+                if (source.external()) {
+                    String osName = System.getProperty("os.name").trim().toLowerCase();
+                    if (osName.contains("mac")) {
+                        String url = this.getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
+                        String base = URLDecoder.decode(url, StandardCharsets.UTF_8);
+                        if (base.indexOf(".app") > 0) {
+                            // 位于MacOS的Bundle（.app软件包）内部，特殊处理以获取正确的路径。
+                            String location = base.substring(0, base.indexOf(".app")) + "/Contents/";
+                            Path target = new File(location).toPath();
+                            configFile = target.resolve(source.value()).toFile();
+                        }
+                    }
+                }
+                out = new FileOutputStream(configFile);
             }
         } else {
             String fsUrl = source.filesystem();
