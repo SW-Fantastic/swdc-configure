@@ -15,6 +15,11 @@ import java.util.Map;
 
 /**
  * Json类型的配置文件的处理。
+ *
+ * 实现的方式是通过Jackson的ObjectMapper，
+ * 配置文件采用标准的JSON类型，你可以使用任何符合JSON标准的
+ * 配置条目。
+ *
  * @param <T>
  */
 public class JsonConfigHandler <T extends AbstractConfig> implements ConfigHandler<T> {

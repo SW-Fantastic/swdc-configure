@@ -14,6 +14,9 @@ import java.util.*;
 
 /**
  * Yaml类型的文件的处理。
+ *
+ * 你可以使用任何标准的yaml语法编写Yaml配置。
+ *
  * @param <T>
  */
 public class YamlConfigHandler  <T extends AbstractConfig> implements ConfigHandler<T> {

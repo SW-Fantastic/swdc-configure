@@ -119,6 +119,16 @@
   "allDeclaredFields" : true,
   "allPublicFields" : true
 }, {
+  "name" : "org.swdc.config.configs.HOCONConfigHandler",
+  "allDeclaredConstructors" : true,
+  "allPublicConstructors" : true,
+  "allDeclaredMethods" : true,
+  "allPublicMethods" : true,
+  "allDeclaredClasses" : true,
+  "allPublicClasses" : true,
+  "allDeclaredFields" : true,
+  "allPublicFields" : true
+}, {
   "name" : "org.swdc.config.configs.InitializeConfigHandler",
   "allDeclaredConstructors" : true,
   "allPublicConstructors" : true,

@@ -13,10 +13,13 @@ public class TestProperties {
 
     public static class TestConfig2  {
 
+        @Property("list")
         private List<String> list;
 
+        @Property("testC")
         private String testC;
 
+        @Property("testD")
         private String testD;
 
         public String getTestC() {

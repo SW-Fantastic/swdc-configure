@@ -1,18 +1,18 @@
 # application - config
 
-[![Release](https://jitpack.io/v/SW-Fantastic/swdc-configure.svg)](https://jitpack.io/#SW-Fantastic/swdc-configure)
 
 配置的处理器，可以快速加载各类外部配置，主要处理配置的读写。
-将会在JitPack提供。
+
 
 预计适配这些类型的配置文件：
 
 
  - [x] yml
- - [x] xml
+ - [x] xml（不好用，过段时间会改掉它）
  - [x] json
  - [x] properties
  - [x] ini
+ - [x] HOCON
 
 提供文件的加载，存储，写入，以及和java对象之间的映射关系，为Core模块
 的启动环境提供必要的基础。

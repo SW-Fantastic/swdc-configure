@@ -20,6 +20,28 @@ import java.util.*;
 
 /**
  * Xml类型的配置文件的处理。
+ *
+ * 你需要使用这样的标签作为xml文件的root标签：
+ * <pre>
+ *    <config></config>
+ * </pre>
+ *
+ * 属性的每一个层级都将会成为xml的一个tag名称，
+ * 例如：yourConfig.test.name，它在xml中将会表现为：
+ * <pre>
+ *     <config>
+ *         <yourConfig>
+ *             <test>
+ *                 <name>your_value</name>
+ *             </test>
+ *         </yourConfig>
+ *     </config>
+ * </pre>
+ *
+ * 自己定义的POJO同样可以用于配置，它在xml文件表现为一个type标注为Map的tag，
+ * 但是请不要在POJO内嵌套另一个POJO。
+ *
+ *
  * @param <T>
  */
 public class XmlConfigHandler<T extends AbstractConfig> implements ConfigHandler<T> {

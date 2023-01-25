@@ -7,6 +7,7 @@ open module swdc.application.configs {
     requires org.yaml.snakeyaml;
     requires io.github.xstream.mxparser;
     requires xstream;
+    requires typesafe.config;
 
     exports org.swdc.config;
     exports org.swdc.config.annotations;

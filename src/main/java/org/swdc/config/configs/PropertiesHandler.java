@@ -16,6 +16,10 @@ import java.util.*;
 
 /**
  * Properties类型的配置文件的处理。
+ *
+ * 也就是java的properties文件格式，你可以使用任何符合properties格式的
+ * 配置条目。
+ *
  * @param <T>
  */
 public class PropertiesHandler  <T extends AbstractConfig> implements ConfigHandler<T> {
@@ -31,59 +35,128 @@ public class PropertiesHandler  <T extends AbstractConfig> implements ConfigHand
             return;
         }
         Properties properties = new Properties();
-
-        Map<Property,Field> fieldMap = this.getReflection(configObj.getClass());
-
-
-        for (Map.Entry<Property,Field>  ent: fieldMap.entrySet()) {
-            try {
-                String key = ent.getKey().value();
-                Field field = ent.getValue();
-                if (Reflections.isSystemType(field.getType())) {
-                    Object value = field.get(configObj);
-                    String property = "";
-                    if (value.getClass() != String.class) {
-                        Converter conv = converters.getConverter(field.getType(),String.class);
-                        if (conv == null) {
-                            throw new RuntimeException("无法转换类型： String to " + field.getType());
-                        }
-                        property = (String) conv.convert(value);
-                    } else {
-                        property = (String) field.get(configObj);
-                    }
-                    properties.setProperty(key,property);
-                } else {
-                    if (List.class.isAssignableFrom(field.getType())) {
-                        String property = this.writeList(field,(List) field.get(configObj));
-                        properties.setProperty(key,property);
-                    } else {
-                        this.setPropertiesObjects(key,field.get(configObj),properties);
-                    }
-
-                }
-            }  catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
+        writeProperties(null,configObj,properties);
         OutputStream outputStream = this.getOutputStream(source);
         properties.store(outputStream,"configuration");
     }
 
-    private String writeList(Field field,List props) {
-        ParameterizedType paramType = (ParameterizedType) field.getGenericType();
-        Class real = (Class) paramType.getActualTypeArguments()[0];
-        if (!Reflections.isSystemType(real)) {
-            throw new RuntimeException("properties不支持List嵌套Object");
+    private void writeProperties(String thePrefix,Object configObj ,Properties properties) {
 
+        Map<Property,Field> fieldMap = this.getReflection(configObj.getClass());
+
+        for (Map.Entry<Property,Field>  ent: fieldMap.entrySet()) {
+            try {
+                String key = ent.getKey().value();
+                if (thePrefix != null) {
+                    key = thePrefix + "." + key;
+                }
+
+                Field field = ent.getValue();
+                field.setAccessible(true);
+
+                if (Reflections.isSystemType(field.getType())) {
+                    Object value = field.get(configObj);
+
+                    if (field.getType() == String.class) {
+                        properties.setProperty(key,value.toString());
+                    } else {
+                        Converter conv = converters.getConverter(field.getType(),String.class);
+                        if (conv == null) {
+                            throw new RuntimeException("无法转换类型： String from " + field.getType());
+                        }
+                        Object realValue = conv.convert(value);
+                        properties.setProperty(key,realValue.toString());
+                    }
+                } else if (Reflections.isCollectionType(field.getType())) {
+
+                    if (Reflections.isList(field.getType())) {
+
+                        List<Class> typeParams = Reflections.getFieldParameters(field);
+                        if (typeParams.isEmpty()) {
+                            continue;
+                        }
+
+                        Class realType = typeParams.get(0);
+                        if (!Reflections.isSystemType(realType)) {
+                            throw new RuntimeException("properties不支持在List中嵌套基本类型之外的对象。");
+                        }
+
+                        List values = (List) field.get(configObj);
+                        String value = "";
+                        for (Object item: values) {
+                            if (realType == String.class) {
+                                value = value.isBlank() ?
+                                        item.toString() :
+                                        value + "," + item.toString();
+                            } else {
+                                Converter converter = converters.getConverter(realType,String.class);
+                                if (converter == null) {
+                                    throw new RuntimeException("无法把String转换为：" + realType.getName());
+                                }
+                                String realValue = converter.convert(item).toString();
+                                value = value.isBlank() ?
+                                        realValue :
+                                        value + "," + realValue;
+                            }
+                        }
+                        properties.setProperty(key,value);
+                    } else if (Reflections.isMap(field.getType())) {
+
+                        List<Class> typeParams = Reflections.getFieldParameters(field);
+                        if (typeParams.size() < 2 || !properties.containsKey(key)) {
+                            continue;
+                        }
+
+                        Class keyType = typeParams.get(0);
+                        Class valType = typeParams.get(1);
+                        if (!Reflections.isSystemType(keyType) || !Reflections.isSystemType(valType)) {
+                            throw new RuntimeException("properties不支持在Map中嵌套基本类型之外的对象。");
+                        }
+
+                        Map<Object,Object> values = (Map) field.get(configObj);
+                        StringBuilder pairs = new StringBuilder();
+
+                        for (Map.Entry pair : values.entrySet()) {
+
+                            String theKey = null;
+                            String value = null;
+
+                            if (keyType == String.class) {
+                                theKey = pair.getKey().toString();
+                            } else {
+                                Converter converter = converters.getConverter(keyType,String.class);
+                                if (converter == null) {
+                                    throw new RuntimeException("无法把String转换为：" + keyType.getName());
+                                }
+                                theKey = converter.convert(pair.getKey()).toString();
+                            }
+
+                            if (valType == String.class) {
+                                value = pair.getValue().toString();
+                            } else {
+                                Converter converter = converters.getConverter(valType,String.class);
+                                if (converter == null) {
+                                    throw new RuntimeException("无法把String转换为：" + valType.getName());
+                                }
+                                value = converter.convert(pair.getValue()).toString();
+                            }
+                            if (pairs.length() > 0) {
+                                pairs.append(",");
+                            }
+                            pairs.append(theKey).append("=").append(value);
+                        }
+                        properties.setProperty(key,pairs.toString());
+                    }
+
+                } else {
+
+                    Object subConf = field.get(configObj);
+                    writeProperties(key,subConf,properties);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
-
-        StringBuilder data = new StringBuilder();
-        for (Object item: props) {
-            data.append(item);
-            data.append(",");
-        }
-
-        return data.substring(0,data.length() - 1);
     }
 
     @Override
@@ -95,16 +168,26 @@ public class PropertiesHandler  <T extends AbstractConfig> implements ConfigHand
         Properties properties = new Properties();
         properties.load(in);
 
-        Map<Property,Field> fieldMap = this.getReflection(configObj.getClass());
+        readPropertiesConfig(null,configObj,properties);
+    }
 
+    private void readPropertiesConfig(String thePrefix,Object configObj, Properties properties) {
+        Map<Property,Field> fieldMap = this.getReflection(configObj.getClass());
 
         for (Map.Entry<Property,Field>  ent: fieldMap.entrySet()) {
             try {
                 String key = ent.getKey().value();
-                Field field = ent.getValue();
+                if (thePrefix != null) {
+                    key = thePrefix + "." + key;
+                }
 
-                if (Reflections.isSystemType(field.getType()) && properties.containsKey(key)) {
-                    field.setAccessible(true);
+                Field field = ent.getValue();
+                field.setAccessible(true);
+
+                if (Reflections.isSystemType(field.getType())) {
+                    if (!properties.containsKey(key)){
+                        continue;
+                    }
                     String value = properties.getProperty(key);
                     if (field.getType() == String.class) {
                         field.set(configObj,value);
@@ -116,117 +199,95 @@ public class PropertiesHandler  <T extends AbstractConfig> implements ConfigHand
                         Object realValue = conv.convert(value);
                         field.set(configObj,realValue);
                     }
-                } else {
+                } else if (Reflections.isCollectionType(field.getType())) {
 
-                    String prefix = key;
-                    Object value = this.loadPropertiesObject(prefix,field.getType(),properties);
+                    if (Reflections.isList(field.getType())) {
 
-                    if (List.class.isAssignableFrom(field.getType())) {
-                        value = this.loadList(field,properties.getProperty(key));
+                        List<Class> typeParams = Reflections.getFieldParameters(field);
+                        if (typeParams.isEmpty() || !properties.containsKey(key)) {
+                            continue;
+                        }
+
+                        Class realType = typeParams.get(0);
+                        if (!Reflections.isSystemType(realType)) {
+                            throw new RuntimeException("properties不支持在List中嵌套基本类型之外的对象。");
+                        }
+
+                        List value = new ArrayList();
+                        String[] values = properties.getProperty(key).split(",");
+                        for (String item: values) {
+                            if (realType == String.class) {
+                                value.add(item);
+                            } else {
+                                Converter converter = converters.getConverter(String.class,realType);
+                                if (converter == null) {
+                                    throw new RuntimeException("无法把String转换为：" + realType.getName());
+                                }
+                                value.add(converter.convert(item));
+                            }
+                        }
+                        field.set(configObj,value);
+                    } else if (Reflections.isMap(field.getType())) {
+
+                        List<Class> typeParams = Reflections.getFieldParameters(field);
+                        if (typeParams.size() < 2 || !properties.containsKey(key)) {
+                            continue;
+                        }
+
+                        Class keyType = typeParams.get(0);
+                        Class valType = typeParams.get(1);
+                        if (!Reflections.isSystemType(keyType) || !Reflections.isSystemType(valType)) {
+                            throw new RuntimeException("properties不支持在Map中嵌套基本类型之外的对象。");
+                        }
+
+                        Map resolved = new HashMap();
+                        String[] pairs = properties.getProperty(key).split(",");
+                        for (String pair : pairs) {
+                            if (!pair.contains("=") || pair.startsWith("=") || pair.endsWith("=")) {
+                                continue;
+                            }
+                            Object theKey;
+                            Object value;
+                            String[] kv = pair.split("=");
+                            if (kv.length != 2) {
+                                continue;
+                            }
+                            if (keyType == String.class) {
+                                theKey = kv[0];
+                            } else {
+                                Converter converter = converters.getConverter(String.class,keyType);
+                                if (converter == null) {
+                                    throw new RuntimeException("无法把String转换为：" + keyType.getName());
+                                }
+                                theKey = converter.convert(kv[0]);
+                            }
+
+                            if (valType == String.class) {
+                                value = kv[1];
+                            } else {
+                                Converter converter = converters.getConverter(String.class,valType);
+                                if (converter == null) {
+                                    throw new RuntimeException("无法把String转换为：" + valType.getName());
+                                }
+                                value = converter.convert(kv[1]);
+                            }
+
+                            resolved.put(theKey,value);
+                        }
+                        field.set(configObj,resolved);
                     }
 
-                    field.set(configObj,value);
+                } else {
+
+                    Object subConf = field.getType().getConstructor().newInstance();
+                    readPropertiesConfig(key,subConf,properties);
+
+                    field.set(configObj,subConf);
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
     }
-
-    private void setPropertiesObjects(String prefix, Object obj, Properties properties) {
-        try {
-            Class type = obj.getClass();
-            Field[] fields = type.getDeclaredFields();
-            for (Field field: fields) {
-                field.setAccessible(true);
-                if (Reflections.isSystemType(field.getType())) {
-                    Object value = field.get(obj);;
-                    if (value.getClass() == String.class) {
-                        properties.setProperty(prefix + "." + field.getName(), (String) value);
-                    } else {
-                        Converter conv = converters.getConverter(String.class,field.getType());
-                        if (conv == null) {
-                            throw new RuntimeException("无法转换类型： String to " + field.getType());
-                        }
-                        Object realValue = conv.convert(value);;
-                        properties.setProperty(prefix + "." + field.getName(), (String) realValue);
-                    }
-                } else {
-                    if (List.class.isAssignableFrom(field.getType())) {
-                        List data = (List) field.get(obj);
-                        String value = this.writeList(field,data);
-                        properties.setProperty(prefix + "." + field.getName(), value);
-                    } else {
-                        this.setPropertiesObjects(prefix + "." + field.getName(),field.getType(),properties);
-
-                    }
-                }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
-    private List loadList(Field field, String prop) {
-        ParameterizedType paramType = (ParameterizedType) field.getGenericType();
-        Class real = (Class) paramType.getActualTypeArguments()[0];
-        if (!Reflections.isSystemType(real)) {
-            throw new RuntimeException("properties不支持List嵌套Object");
-
-        }
-        String[] values = prop.split(",");
-        ArrayList list = new ArrayList();
-
-        for (String item: values) {
-            if (real.equals(String.class)) {
-                list.add(item);
-            } else {
-                Converter conv = converters.getConverter(item.getClass(),real);
-                if (conv == null) {
-                    throw new RuntimeException("无法转换类型： String to " + field.getType());
-                }
-                Object realValue = conv.convert(item);
-                list.add(realValue);
-            }
-        }
-        return list;
-    }
-
-    private Object loadPropertiesObject(String prefix,Class type, Properties properties) {
-        try {
-            Object target = type.getConstructor().newInstance();
-            Field[] fields = type.getDeclaredFields();
-            for (Field field: fields) {
-                field.setAccessible(true);
-                if (Reflections.isSystemType(field.getType())) {
-                    String value = properties.getProperty(prefix + "." + field.getName());
-                    if (field.getType() == String.class) {
-                        field.set(target,value);
-                    } else {
-                        Converter conv = converters.getConverter(String.class,field.getType());
-                        if (conv == null) {
-                            throw new RuntimeException("无法转换类型： String to " + field.getType());
-                        }
-                        Object realValue = conv.convert(value);
-                        field.set(target,realValue);
-                    }
-                } else {
-                    if (List.class.isAssignableFrom(field.getType())){
-                        // 是一个list
-                        String val = properties.getProperty(prefix + "." + field.getName());
-                        field.set(target,loadList(field,val));
-                        continue;
-                    }
-                    Object value = this.loadPropertiesObject(prefix + "." + field.getName(),field.getType(),properties);
-                    field.set(target,value);
-                }
-            }
-            return target;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 
 }
