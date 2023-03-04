@@ -19,6 +19,11 @@ public class Converters {
                 .addConverter(String.class,Integer.class,this::covertIntFormString)
                 .addConverter(Integer.class,String.class,this::convertStringFormInt)
 
+                .addConverter(String.class,long.class, this::converterLongFromString)
+                .addConverter(long.class,String.class,this::convertStringFromLong)
+                .addConverter(String.class,Long.class,this::converterLongFromString)
+                .addConverter(Long.class,String.class, this::convertStringFromLong)
+
                 .addConverter(String.class,double.class,this::convertDoubleFormString)
                 .addConverter(double.class,String.class,this::convertStringFormDouble)
                 .addConverter(String.class,Double.class,this::convertDoubleFormString)
@@ -49,6 +54,8 @@ public class Converters {
                 .addConverter(short.class,Short.class, (s) -> s)
                 .addConverter(boolean.class,Boolean.class, (b)->b)
                 .addConverter(Boolean.class,boolean.class, (b) -> b)
+                .addConverter(long.class,Long.class, (l) -> l)
+                .addConverter(Long.class,long.class, (l) -> l)
 
                 // 精度丢失的强制转换。
 
@@ -116,6 +123,14 @@ public class Converters {
 
     private String convertStringFormInt(int number) {
         return Integer.toString(number);
+    }
+
+    private String convertStringFromLong(long num) {
+        return Long.toString(num);
+    }
+
+    private long converterLongFromString(String val) {
+        return Long.parseLong(val);
     }
 
     private String convertStringFormFloat(float number) {

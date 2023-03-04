@@ -290,4 +290,16 @@ public class PropertiesHandler  <T extends AbstractConfig> implements ConfigHand
         }
     }
 
+    public static <T> T unManaged(Class<T> target, Properties properties) {
+        try {
+            Object conf = target.getConstructor()
+                    .newInstance();
+            PropertiesHandler handler = new PropertiesHandler();
+            handler.readPropertiesConfig(null,conf,properties);
+            return (T)conf;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
