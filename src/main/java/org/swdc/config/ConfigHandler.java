@@ -2,7 +2,7 @@ package org.swdc.config;
 
 import org.swdc.config.annotations.ConfigureSource;
 import org.swdc.config.annotations.Property;
-import org.swdc.config.converters.Converters;
+import org.swdc.ours.common.type.Converters;
 
 import java.io.*;
 import java.lang.reflect.Field;

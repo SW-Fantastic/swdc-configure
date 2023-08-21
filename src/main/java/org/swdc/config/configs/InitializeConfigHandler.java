@@ -2,10 +2,11 @@ package org.swdc.config.configs;
 
 import org.swdc.config.AbstractConfig;
 import org.swdc.config.ConfigHandler;
-import org.swdc.config.Converter;
 import org.swdc.config.Reflections;
 import org.swdc.config.annotations.ConfigureSource;
 import org.swdc.config.annotations.Property;
+import org.swdc.ours.common.type.ClassTypeAndMethods;
+import org.swdc.ours.common.type.Converter;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -95,7 +96,7 @@ public class InitializeConfigHandler <T extends AbstractConfig> implements Confi
             target.setAccessible(true);
             try {
                 String originKey = ent.getKey().value();
-                if (!Reflections.isCollectionType(target.getType()) && !Reflections.isSystemType(target.getType())) {
+                if (!ClassTypeAndMethods.isCollectionType(target.getType()) && !Reflections.isSystemType(target.getType())) {
                     // 是Object类型，这个是一整个section直接映射到Object
                     data.putAll(writeSection(originKey,target.get(configObj)));
                 } else {
@@ -213,7 +214,7 @@ public class InitializeConfigHandler <T extends AbstractConfig> implements Confi
             target.setAccessible(true);
             try {
                 String originKey = ent.getKey().value();
-                if (!Reflections.isCollectionType(target.getType()) && !Reflections.isSystemType(target.getType())) {
+                if (!ClassTypeAndMethods.isCollectionType(target.getType()) && !Reflections.isSystemType(target.getType())) {
                     // 是Object类型，这个是一整个section直接映射到Object
                     Object sectionObj = target.getType()
                             .getConstructor()

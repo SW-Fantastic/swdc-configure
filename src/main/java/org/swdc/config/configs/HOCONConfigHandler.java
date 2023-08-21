@@ -1,14 +1,13 @@
 package org.swdc.config.configs;
 
 import com.typesafe.config.*;
-import com.typesafe.config.parser.ConfigDocument;
-import com.typesafe.config.parser.ConfigDocumentFactory;
 import org.swdc.config.AbstractConfig;
 import org.swdc.config.ConfigHandler;
-import org.swdc.config.Converter;
 import org.swdc.config.Reflections;
 import org.swdc.config.annotations.ConfigureSource;
 import org.swdc.config.annotations.Property;
+import org.swdc.ours.common.type.ClassTypeAndMethods;
+import org.swdc.ours.common.type.Converter;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -83,9 +82,9 @@ public class HOCONConfigHandler <T extends AbstractConfig> implements  ConfigHan
                         }
                         target.set(configObj,converter.convert(value));
                     }
-                } else if (Reflections.isCollectionType(target.getType())) {
-                    if (Reflections.isList(target.getType())) {
-                        List<Class> typeParam = Reflections.getFieldParameters(target);
+                } else if (ClassTypeAndMethods.isCollectionType(target.getType())) {
+                    if (ClassTypeAndMethods.isList(target.getType())) {
+                        List<Class> typeParam = ClassTypeAndMethods.getFieldParameters(target);
                         if (typeParam.size() == 0) {
                             continue;
                         }
@@ -104,8 +103,8 @@ public class HOCONConfigHandler <T extends AbstractConfig> implements  ConfigHan
                             }
                             target.set(configObj,targetVal);
                         }
-                    } else if (Reflections.isMap(target.getType())) {
-                        List<Class> paramTypes = Reflections.getFieldParameters(target);
+                    } else if (ClassTypeAndMethods.isMap(target.getType())) {
+                        List<Class> paramTypes = ClassTypeAndMethods.getFieldParameters(target);
                         if (paramTypes.size() < 2) {
                             continue;
                         }
@@ -175,9 +174,9 @@ public class HOCONConfigHandler <T extends AbstractConfig> implements  ConfigHan
                         }
                         theConfig = theConfig.withValue(prop,ConfigValueFactory.fromAnyRef(converter.convert(value)));
                     }
-                } else if (Reflections.isCollectionType(target.getType())) {
-                    if (Reflections.isList(target.getType())) {
-                        List<Class> typeParam = Reflections.getFieldParameters(target);
+                } else if (ClassTypeAndMethods.isCollectionType(target.getType())) {
+                    if (ClassTypeAndMethods.isList(target.getType())) {
+                        List<Class> typeParam = ClassTypeAndMethods.getFieldParameters(target);
                         if (typeParam.size() == 0) {
                             continue;
                         }
@@ -199,8 +198,8 @@ public class HOCONConfigHandler <T extends AbstractConfig> implements  ConfigHan
                             }
                             theConfig = theConfig.withValue(prop,ConfigValueFactory.fromIterable(targetVal));
                         }
-                    } else if (Reflections.isMap(target.getType())) {
-                        List<Class> paramTypes = Reflections.getFieldParameters(target);
+                    } else if (ClassTypeAndMethods.isMap(target.getType())) {
+                        List<Class> paramTypes = ClassTypeAndMethods.getFieldParameters(target);
                         if (paramTypes.size() < 2) {
                             continue;
                         }

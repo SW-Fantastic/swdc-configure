@@ -2,16 +2,16 @@ package org.swdc.config.configs;
 
 import org.swdc.config.AbstractConfig;
 import org.swdc.config.ConfigHandler;
-import org.swdc.config.Converter;
 import org.swdc.config.Reflections;
 import org.swdc.config.annotations.ConfigureSource;
 import org.swdc.config.annotations.Property;
+import org.swdc.ours.common.type.ClassTypeAndMethods;
+import org.swdc.ours.common.type.Converter;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
 /**
@@ -67,11 +67,11 @@ public class PropertiesHandler  <T extends AbstractConfig> implements ConfigHand
                         Object realValue = conv.convert(value);
                         properties.setProperty(key,realValue.toString());
                     }
-                } else if (Reflections.isCollectionType(field.getType())) {
+                } else if (ClassTypeAndMethods.isCollectionType(field.getType())) {
 
-                    if (Reflections.isList(field.getType())) {
+                    if (ClassTypeAndMethods.isList(field.getType())) {
 
-                        List<Class> typeParams = Reflections.getFieldParameters(field);
+                        List<Class> typeParams = ClassTypeAndMethods.getFieldParameters(field);
                         if (typeParams.isEmpty()) {
                             continue;
                         }
@@ -100,9 +100,9 @@ public class PropertiesHandler  <T extends AbstractConfig> implements ConfigHand
                             }
                         }
                         properties.setProperty(key,value);
-                    } else if (Reflections.isMap(field.getType())) {
+                    } else if (ClassTypeAndMethods.isMap(field.getType())) {
 
-                        List<Class> typeParams = Reflections.getFieldParameters(field);
+                        List<Class> typeParams = ClassTypeAndMethods.getFieldParameters(field);
                         if (typeParams.size() < 2 || !properties.containsKey(key)) {
                             continue;
                         }
@@ -199,11 +199,11 @@ public class PropertiesHandler  <T extends AbstractConfig> implements ConfigHand
                         Object realValue = conv.convert(value);
                         field.set(configObj,realValue);
                     }
-                } else if (Reflections.isCollectionType(field.getType())) {
+                } else if (ClassTypeAndMethods.isCollectionType(field.getType())) {
 
-                    if (Reflections.isList(field.getType())) {
+                    if (ClassTypeAndMethods.isList(field.getType())) {
 
-                        List<Class> typeParams = Reflections.getFieldParameters(field);
+                        List<Class> typeParams = ClassTypeAndMethods.getFieldParameters(field);
                         if (typeParams.isEmpty() || !properties.containsKey(key)) {
                             continue;
                         }
@@ -227,9 +227,9 @@ public class PropertiesHandler  <T extends AbstractConfig> implements ConfigHand
                             }
                         }
                         field.set(configObj,value);
-                    } else if (Reflections.isMap(field.getType())) {
+                    } else if (ClassTypeAndMethods.isMap(field.getType())) {
 
-                        List<Class> typeParams = Reflections.getFieldParameters(field);
+                        List<Class> typeParams = ClassTypeAndMethods.getFieldParameters(field);
                         if (typeParams.size() < 2 || !properties.containsKey(key)) {
                             continue;
                         }

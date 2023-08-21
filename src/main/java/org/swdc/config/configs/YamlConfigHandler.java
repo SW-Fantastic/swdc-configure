@@ -2,9 +2,9 @@ package org.swdc.config.configs;
 
 import org.swdc.config.AbstractConfig;
 import org.swdc.config.ConfigHandler;
-import org.swdc.config.Converter;
 import org.swdc.config.annotations.ConfigureSource;
 import org.swdc.config.annotations.Property;
+import org.swdc.ours.common.type.Converter;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
