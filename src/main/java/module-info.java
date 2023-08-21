@@ -13,7 +13,6 @@ open module swdc.application.configs {
     exports org.swdc.config;
     exports org.swdc.config.annotations;
     exports org.swdc.config.configs;
-    exports org.swdc.config.converters;
 
 
 
